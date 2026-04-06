@@ -79,7 +79,7 @@ sections:
   - request: What you need
   - about_you: About you
   - about_landlord: About the landlord
-  - review_VTHousingRA: Review your answers <i class="fa-solid fa-pencil"></i> <u>Edit your answers</u>
+  - review_VTHousingRA: <i class="fa-solid fa-pencil"></i> <u>Edit your answers</u>
   - sign: Signature
   - get_docs: Get your document
 progressive: False
@@ -335,6 +335,29 @@ subquestion: |
 
   Is this correct?  If yes, click Next. If no, click Undo and edit your request.
 back button: True
+---
+
+id: gather users contact information
+question: |
+  What is your contact information?
+subquestion: |
+  Include at least one way **<span style="color:e11717;">*</span>** to reach you other than by mail. 
+fields:  
+  - Phone number: users[0].phone_number
+    datatype: al_international_phone
+    required: False
+  - Work number: users1_work_phone_number
+    datatype: al_international_phone
+    required: False
+  - Email: users[0].email    
+    datatype: email
+    required: False      
+validation code: |
+  if (not showifdef('users[0].phone_number') and \
+      (not showifdef('users[0].email')) and \
+      (not showifdef('users1_work_phone_number'))):
+    validation_error(word("You need to provide at least one contact method."), field="users[0].other_contact_method")
+
 ---
 code: |
   custom_body = f"I am requesting { custom_change }. { custom_justification }"
