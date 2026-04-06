@@ -1,0 +1,28 @@
+[build-system]
+requires = [
+    "setuptools==80.9.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docassemble.VTHousingRA"
+version = "1.0"
+description = "Ask for disability accommodations from a landlord"
+readme = "README.md"
+authors = [
+    { name = "Kris Surette", email = "ksurette@legalservicesvt.org" },
+]
+dependencies = [
+    "docassemble.ALToolbox @ git+https://github.com/SuffolkLITLab/docassemble-ALToolbox.git@main",
+    "docassemble.AssemblyLine @ git+https://github.com/SuffolkLITLab/docassemble-AssemblyLine.git@main",
+    "docassemble.VTFeedback @ git+https://github.com/VTskier/docassemble-VTFeedback.git@main",
+    "docassemble.VTSharedYMLFile @ git+https://github.com/LSVermont/docassemble-VTSharedYMLFile.git@main",
+]
+
+[project.urls]
+Homepage = "https://VTLawHelp.org"
+
+[tool.setuptools.packages.find]
+where = [
+    ".",
+]
