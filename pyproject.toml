@@ -7,10 +7,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "docassemble.VTHousingRA"
 version = "1.0"
-description = "Ask for disability accommodations from a landlord"
+description = "Ask for reasonable accommodation from a landlord due to a disability"
 readme = "README.md"
 authors = [
-    { name = "Kris Surette", email = "ksurette@legalservicesvt.org" },
+    { name = "VTCourtForms / Legal Services Vermont", email = "ksurette@legalservicesvt.org" },
 ]
 dependencies = [
     "docassemble.ALToolbox @ git+https://github.com/SuffolkLITLab/docassemble-ALToolbox.git@main",

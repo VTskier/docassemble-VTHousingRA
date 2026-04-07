@@ -1,6 +1,6 @@
 # docassemble.VTHousingRA
 
-Ask for disability accommodations from a landlord
+Ask for reasonable accommodation from a landlord due to a disability
 
 ## Author
 

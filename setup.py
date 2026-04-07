@@ -45,10 +45,10 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
 
 setup(name='docassemble.VTHousingRA',
       version='1.0',
-      description=('Ask for disability accommodations from a landlord'),
-      long_description='# docassemble.VTHousingRA\r\n\r\nAsk for disability accommodations from a landlord\r\n\r\n## Author\r\n\r\nKris Surette, ksurette@legalservicesvt.org\r\n\r\n',
+      description=('Ask for reasonable accommodation from a landlord due to a disability'),
+      long_description='# docassemble.VTHousingRA\r\n\r\nAsk for reasonable accommodation from a landlord due to a disability\r\n\r\n## Author\r\n\r\nKris Surette, ksurette@legalservicesvt.org\r\n\r\n',
       long_description_content_type='text/markdown',
-      author='Kris Surette',
+      author='VTCourtForms / Legal Services Vermont',
       author_email='ksurette@legalservicesvt.org',
       license='',
       url='https://VTLawHelp.org',
