@@ -15,10 +15,7 @@ metadata:
   can_I_use_this_form: |
     You can use this form if you or someone in your household has a disability and you need a reasonable accommodation from your landlord.
   before_you_start: |
-    Before you start, gather:
-    
-    1. The name and address of your landlord or property manager.
-    2. How you will deliver the letter (tenant portal, email, or mail).
+    Before you start, gather the name and address of your landlord or property manager.
   when_you_are_finished: |
     After you finish, download and sign your letter. Then send it to your landlord by tenant portal, email, or mail. Keep a copy for your records.
   
@@ -51,14 +48,6 @@ metadata:
   form_numbers: []
   update_notes: |
     Initial release.
----
-code: |
-  # This controls the default country and list of states in address field questions
-  AL_DEFAULT_COUNTRY = "US"
----
-code: |
-  # This controls the default state in address field questions
-  AL_DEFAULT_STATE = "VT"
 ---
 code: |
   github_repo_name =  'docassemble-VTHousingRA'
@@ -126,6 +115,7 @@ code: |
   set_progress(60)
   nav.set_section("review_VTHousingRA")
   nav.set_section("sign")
+  al_form_requires_digital_signature = False
   basic_questions_signature_flow
   interview_order_VTHousingRA = True
 ---
@@ -177,9 +167,9 @@ subquestion: |
 
   When you are finished, you will need to download the completed letter or email it to yourself. Then you can either:
 
-  - Upload the signed letter to your tenant portal,
-  - Attach the letter to an email to your landlord or property management company, or
-  - Print and mail the letter to your landlord or property management company.
+  - attach the letter to an email to your landlord or property management company, or
+  - print and mail the letter to your landlord or property management company, or
+  - upload the signed letter to your tenant portal (if you have one where you live).
 
 fields:
   - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
@@ -313,7 +303,39 @@ subquestion: |
   Is this correct?  If yes, click Next. If no, click Undo and edit your request.
 back button: True
 ---
-
+id: gather users street address
+sets:
+  - users[0].address.address
+  - users[0].address.city
+  - users[0].address.zip
+  - users[0].address.unit
+  - users[0].address.state
+  - users[0].address.country
+question: |
+  What is your address?
+  
+fields:
+  - code: |
+      users[0].address_fields(default_state=AL_DEFAULT_STATE)
+  - I have a mailing address that is different from my street address: users_mailing_address_different
+    datatype: yesno
+  - Mailing address: users[0].mailing_address.address
+    address autocomplete: True
+    show if: users_mailing_address_different
+  - Unit: users[0].mailing_address.unit
+    required: False
+    show if: users_mailing_address_different
+  - City: users[0].mailing_address.city
+    show if: users_mailing_address_different
+  - State: users[0].mailing_address.state
+    code: |
+      states_list()
+    default: VT
+    show if: users_mailing_address_different
+  - Zip or postal code: users[0].mailing_address.zip
+    required: False
+    show if: users_mailing_address_different
+---
 id: gather users contact information
 question: |
   What is your contact information?
@@ -358,6 +380,31 @@ subquestion: |
   Remember to come back to this window to continue and sign your form.
 continue button field: VTHousingRA_preview_question    
 ---
+id: signature choice
+decoration: file-signature
+question: |
+  Your documents are almost ready
+subquestion: |
+  How do you want to sign them?
+fields: 
+  - I will sign: signature_choice
+    input type: radio
+    choices:
+      - On my computer or phone: this_device
+    show if:
+      code: |
+        al_form_requires_digital_signature
+  - I will sign: signature_choice
+    input type: radio
+    choices:
+      - On my computer or phone: this_device
+      - On the paper with a pen after I print the documents: sign_after_printing
+    show if:
+      code: |
+        not al_form_requires_digital_signature
+continue button field: saw_signature_choice   
+---
+---
 id: request letter review screen
 event: review_VTHousingRA
 question: |
@@ -365,22 +412,27 @@ question: |
 review:
   - Edit: users.revisit
     button: |
-      **Users**
+      **About you**
 
       % for item in users:
         * ${ item }
       % endfor
   - Edit: landlords.revisit
     button: |
-      **Landlords**
+      **About your landlord or property management company**
 
       % for item in landlords:
         * ${ item }
       % endfor
   - Edit: request_subject
     button: |
-      **Accommodations recipient**:
+      **Accommodations are for**:
       ${ request_subject }
+  - Edit: is_custom
+    button: |
+      **What you need**:
+      
+      ${ request_body }
 ---
 continue button field: users.revisit
 question: |
@@ -393,32 +445,29 @@ subquestion: |
 table: users.table
 rows: users
 columns:
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
-  - Signature: |
-      row_item.signature if defined("row_item.signature") else ""
   - Name: |
       row_item.name.full() if defined("row_item.name.first") else ""
   - Address: |
       row_item.address.block() if defined("row_item.address.address") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+  - Signature: |
+      row_item.signature if defined("row_item.signature") else ""
 edit:
-  - phone_number
-  - signature
   - name.first
   - address.address
+  - phone_number
+  - signature
 confirm: True
 ---
 table: landlords.table
 rows: landlords
 columns:
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
   - Name: |
       row_item.name.full() if defined("row_item.name.first") else ""
   - Address: |
       row_item.address.block() if defined("row_item.address.address") else ""
 edit:
-  - phone_number
   - name.first
   - address.address
 confirm: True
@@ -426,26 +475,33 @@ confirm: True
 id: download VTHousingRA
 event: VTHousingRA_download
 question: |
-  All done
-subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-  
-  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+  Review your letter and download and/or print it
+subquestion: |  
+  ${ download_screen_instructions }
 
-  ${ action_button_html(url_action('review_VTHousingRA'), label='Edit answers', color='info') }
+  ${ action_button_html(url_action('review_VTHousingRA'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
+
+  <hr>
   
+  <h4 style="margin-bottom: 18px;">Documents to download</h4>
   
   ${ al_user_bundle.download_list_html() }
-  
 
   ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+  <hr>  
+  
+  ${ download_screen_bottom_instructions }
+  
+  ${ collapse_template(not_seeing_email) }
+  ${ collapse_template(log_out_when_done) }
 
 progress: 100
 ---
 # ALDocument objects specify the metadata for each template
 objects:
   - reasonableaccommodationsrequesttola_Post_interview_instructions: ALDocument.using(title="Instructions", filename="reasonableaccommodationsrequesttola_next_steps.docx", enabled=True, has_addendum=False)
-  - reasonableaccommodationsrequesttola_attachment: ALDocument.using(title="Reasonable Accommodations Request to Landlord", filename="reasonableaccommodationsrequesttola", enabled=True, has_addendum=False, )
+  - reasonableaccommodationsrequesttola_attachment: ALDocument.using(title="Reasonable Accommodations request to landlord", filename="reasonableaccommodationsrequesttola", enabled=True, has_addendum=False, )
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
