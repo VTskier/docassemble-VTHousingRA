@@ -7,13 +7,13 @@ include:
 ---
 metadata:
   title: >-
-    Tenant accommodations request letter
+    Ask landlord for an accommodation due to disability
   short title: >-
-    Tenant accommodations request
+    Ask landlord for an accommodation
   description: |-
-    This interview helps a tenant in Vermont write a letter to a landlord to request a reasonable accommodation related to a disability.
+    This interview helps a tenant write a letter to a landlord to request a reasonable accommodation related to a disability.
   can_I_use_this_form: |
-    You can use this form if you or someone in your household has a disability and you need a reasonable accommodation from your landlord in Vermont.
+    You can use this form if you or someone in your household has a disability and you need a reasonable accommodation from your landlord.
   before_you_start: |
     Before you start, gather:
     
@@ -47,7 +47,7 @@ metadata:
   jurisdiction: NAM-US
   review_date: 2027-1-15
   form_titles:
-    - Tenant accommodations request letter
+    - Ask landlord for an accommodation due to disability
   form_numbers: []
   update_notes: |
     Initial release.
@@ -64,7 +64,7 @@ code: |
   github_repo_name =  'docassemble-VTHousingRA'
 ---
 code: |
-  interview_short_title = "Tenant disability accommodations request letter"
+  interview_short_title = "Ask landlord for an accommodation due to disability"
 ---
 code: |
   al_form_type = "letter" 
@@ -90,7 +90,7 @@ progressive: False
 #################### Interview order #####################
 comment: |
   Controls order and branching logic for questions specific to this form
-id: interview_order_reasonableaccommodationsrequesttola
+id: interview_order
 code: |
   user_role = "na"
   user_ask_role = "na"
@@ -151,7 +151,7 @@ code: |
 ---
 id: basic questions intro screen
 question: |
-  **${interview_short_title} in Vermont**
+  **${interview_short_title}**
 subquestion: |  
   
   <p>${ intro_vtcourtforms_3_steps }</p>
@@ -195,29 +195,6 @@ fields:
 
   - note: |
       Next, let’s make sure this is the right tool for your situation.
----
-#id: ReasonableAccommodationsRequesttoLandlord
-#continue button field: reasonableaccommodationsrequesttola_intro
-#question: |
-#  Tenant accommodations request letter
-#subquestion: |
-#  This interview helps you write a letter to your landlord to request a reasonable accommodation related to a disability.
-#  
-#  You can use this interview if you or someone in your household has a disability and you need a change to rules, policies, or services in your housing.
-#  
-#  Before you get started:
-#  
-#  1. Gather the name and address of your landlord or property manager.
-#  2. Decide how you will deliver the letter (tenant portal, email, or mail).
-#  
-#  When you are finished, you will need to download the completed letter and either:
-#    
-#  1. Upload the signed letter to your tenant portal, 
-#  2. Attach the letter to an email to your landlord or property management company, or
-#  3. Print and mail the letter to your landlord or property management company. 
-#
-#
-#  Most people take about 7 minutes to complete this interview.
 ---
 id: Confirm Purpose
 question: |
@@ -376,13 +353,13 @@ subquestion: |
   Click the image to open it in a new tab. Click the "Edit answers" button
   to edit your answers.
 
-  ${ action_button_html(url_action('review_reasonableaccommodationsrequesttola'), label='Edit answers', color='info') }
+  ${ action_button_html(url_action('review_VTHousingRA'), label='Edit answers', color='info') }
   
   Remember to come back to this window to continue and sign your form.
-continue button field: reasonableaccommodationsrequesttola_preview_question    
+continue button field: VTHousingRA_preview_question    
 ---
 id: request letter review screen
-event: review_reasonableaccommodationsrequesttola
+event: review_VTHousingRA
 question: |
   Review your answers
 review:
@@ -455,7 +432,7 @@ subquestion: |
   
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
 
-  ${ action_button_html(url_action('review_reasonableaccommodationsrequesttola'), label='Edit answers', color='info') }
+  ${ action_button_html(url_action('review_VTHousingRA'), label='Edit answers', color='info') }
   
   
   ${ al_user_bundle.download_list_html() }
